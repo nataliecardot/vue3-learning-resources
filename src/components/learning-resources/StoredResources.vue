@@ -8,7 +8,8 @@
 import LearningResource from './LearningResource.vue';
 
 export default {
-  props: ['resources'],
+  // resources provided with 'provide' key in TheResources
+  inject: ['resources'],
   components: {
     LearningResource
   }
