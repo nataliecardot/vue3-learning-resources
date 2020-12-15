@@ -4,8 +4,11 @@
     <base-button @click="setSelectedTab('stored-resources')" :mode="storedResButtonMode">Stored Resources</base-button>
     <base-button @click="setSelectedTab('add-resource')" :mode="addResButtonMode">Add Resource</base-button>
   </base-card>
-  <!-- Dynamic component -->
-  <component :is="selectedTab"></component>
+  <!-- Cache component so data is not lost when switching between tabs (for example inputted text) -->
+  <!-- <component> is a dynamic component -->
+  <keep-alive>
+    <component :is="selectedTab"></component>
+  </keep-alive>
 </template>
 
 <script>
@@ -29,7 +32,8 @@ export default {
   provide() {
     return {
       // providing resources to all lower-level components
-      resources: this.storedResources
+      resources: this.storedResources,
+      addResource: this.addResource
     }
   },
   computed: {
@@ -43,6 +47,17 @@ export default {
   methods: {
     setSelectedTab(tab) {
       this.selectedTab = tab;
+    },
+    addResource(title, description, url) {
+      const newResource = {
+        id: new Date().toISOString(),
+        title,
+        description,
+        link: url
+      };
+      this.storedResources.unshift(newResource);
+      // Switch tab after new resource added
+      this.selectedTab = 'stored-resources';
     }
   }
 }
