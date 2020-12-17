@@ -1,4 +1,6 @@
 <template>
+<!-- Using teleport feature so not deeply nested in DOM (it's being moved to end of body) - for accessibility/HTML structure -->
+<teleport to="body">
   <div @click="$emit('close')"></div>
   <!-- HTML 5.2 introduced dialog element - for a modal dialog. Dialog is hidden from view by default (and from DOM access) unless open attribute is used -->
   <dialog open>
@@ -18,6 +20,7 @@
       </slot>
     </menu>
   </dialog>
+  </teleport>
 </template>
 
 <script>
