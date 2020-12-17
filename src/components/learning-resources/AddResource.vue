@@ -1,4 +1,15 @@
 <template>
+  <!-- Not providing HTML content for header slot; just using default fallback and providing own title text -->
+  <base-dialog v-if="inputIsInvalid" title="Invalid input" @close="confirmError">
+    <!-- Targeting default slot. # is shorthand for v-slot: -->
+    <template #default>
+      <p>At least one input value is invalid.</p>
+      <p>Please check all inputs and make sure you enter at least a few characters into each input field.</p>
+    </template>
+    <template #actions>
+      <base-button @click="confirmError">OK</base-button>
+    </template>
+  </base-dialog>
   <base-card>
     <form @submit.prevent="submitData">
       <div class="form-control">
@@ -24,13 +35,26 @@
 <script>
 export default {
   inject: ['addResource'],
+  data() {
+    return {
+      inputIsInvalid: false
+    }
+  },
   methods: {
     submitData() {
       const enteredTitle = this.$refs.titleInput.value;
       const enteredDescription = this.$refs.descInput.value;
       const enteredUrl = this.$refs.linkInput.value;
 
+      if (enteredTitle.trim() === '' || enteredDescription.trim() === '' || enteredUrl.trim() === '') {
+        this.inputIsInvalid = true;
+        return;
+      }
+
       this.addResource(enteredTitle, enteredDescription, enteredUrl)
+    },
+    confirmError() {
+      this.inputIsInvalid = false;
     }
   }
 }
