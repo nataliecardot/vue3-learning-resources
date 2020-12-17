@@ -31,9 +31,10 @@ export default {
   },
   provide() {
     return {
-      // providing resources to all lower-level components
+      // Providing resources to all lower-level componentsn (provide/inject)
       resources: this.storedResources,
-      addResource: this.addResource
+      addResource: this.addResource,
+      deleteResource: this.removeResource
     }
   },
   computed: {
@@ -58,6 +59,11 @@ export default {
       this.storedResources.unshift(newResource);
       // Switch tab after new resource added
       this.selectedTab = 'stored-resources';
+    },
+    removeResource(resId) {
+      // Note - due to how provide/inject works, and since array is a reference type, can't replace whole array; will create a bug. Must manipulate existing array -> Vue recognizes this, and all components that injected this array will notice this as well
+      const resIndex = this.storedResources.findIndex(res => res.id === resId);
+      this.storedResources.splice(resIndex, 1);
     }
   }
 }
